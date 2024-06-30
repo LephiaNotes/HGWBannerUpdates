@@ -1,19 +1,19 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, TextAreaField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
 from wtforms.validators import DataRequired, Length
 import sqlite3
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SECRET KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# User Class for Flask-login
+# User class for Flask-Login
 class User(UserMixin):
     def __init__(self, id, username, password, role):
         self.id = id
@@ -36,10 +36,14 @@ def get_db_connection():
     return conn
 
 def calculate_remaining_time(end_date):
-    end_date_dt = datetime.strptime(end_date, '%Y-%m-%d')
-    now = datetime.now()
-    remaining_time = end_date_dt - now
-    return remaining_time.days
+    try:
+        end_date_dt = datetime.strptime(end_date, '%Y-%m-%d')
+        now = datetime.now()
+        remaining_time = end_date_dt - now
+        return remaining_time.days
+    except ValueError as e:
+        print(f"Error parsing date: {e}")
+        return -1
 
 @app.route('/')
 def index():
@@ -54,6 +58,7 @@ def index():
             banner_dict['remaining_time'] = remaining_time
             banner_dict['Type'] = banner_dict.pop('Banner_type')
             banners_with_remaining_time.append(banner_dict)
+    print("Processed banners with remaining time:", banners_with_remaining_time)
     return render_template('index.html', banners=banners_with_remaining_time)
 
 @app.route('/api/banners', methods=['GET'])
@@ -71,8 +76,8 @@ def get_banners():
             banners_with_remaining_time.append(banner_dict)
     return jsonify(banners_with_remaining_time)
 
-# User Login Route
-@app.route('/login', methods = ['GET', 'POST'])
+# User login route
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -84,26 +89,26 @@ def login():
             user_obj = User(user['id'], user['username'], user['password'], user['role'])
             login_user(user_obj)
             return redirect(url_for('index'))
-        flash ('Invalid Username or Password')
+        flash('Invalid username or password')
     return render_template('login.html')
 
-#User Logout Route
+# User logout route
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
-#Form for Adding New Banners
+# Form for adding a new banner
 class BannerForm(FlaskForm):
-    game_title = StringField('Game Title', validators = [DataRequired()])
-    type = StringField('Type', validators = [DataRequired()])
-    name = StringField('Name', validators = [DataRequired()])
-    start_date = DateField('Start Date', format = '%Y-%m-%d', validators = [DataRequired()])
-    end_date = DateField('Start Date', format = '%Y-%m-%d', validators = [DataRequired()])
+    game_title = StringField('Game Title', validators=[DataRequired()])
+    type = StringField('Type', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    start_date = DateField('Start Date', format='%Y-%m-%d', validators=[DataRequired()])
+    end_date = DateField('End Date', format='%Y-%m-%d', validators=[DataRequired()])
     submit = SubmitField('Add Banner')
 
-@app.route('/add_banner', methods = ['GET', 'POST'])
+@app.route('/add_banner', methods=['GET', 'POST'])
 @login_required
 def add_banner():
     if current_user.role != 'admin':
@@ -118,7 +123,7 @@ def add_banner():
         conn.commit()
         conn.close()
         return redirect(url_for('index'))
-    return render_template('add_banner.html', form = form)
+    return render_template('add_banner.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)

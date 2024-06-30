@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <title>HGW Banners</title>
+    <link rel = "stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class = "navbar navbar-expand-lg navbar-light bg-light">
+        <a class = "navbar-brand" href = "/">HGW Banners</a>
+        <div class = "collapse navbar-collapse" id = "navbarNav">
+            <ul class = "navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                    <li class = "nav-item">
+                        <a class = "nav-link" href = "{{ url_for('add_banner') }}">Add Banner</a>
+                    </li>
+                    <li class = "nav-item">
+                        <a class = "nav-link" href = "{{ url_for('logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class = "nav-item">
+                        <a class = "nav-link" href = "{{ url_for('login') }}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div class = "container">
+        <h1 class = "mt-5">Current Banners</h1>
+        <ul class = "list-group mt-3">
+            {% for banner in banners %}
+                <li class = "list-group-item">
+                    <h2>{{ banner.name }} ({{ banner.game_title }})</h2>
+                    <p>Type:  {{ banner.type }}</p>
+                    <p>Start Date: {{ banner.start_date }}</p>
+                    <p>End Date: {{ banner.end_date }}</p>
+                    <p>Remaining Time: {{ banner.remaining_time }} days</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
