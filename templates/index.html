@@ -1,44 +1,98 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 <head>
-    <meta charset = "UTF-8">
-    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HGW Banners</title>
-    <link rel = "stylesheet" href = "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <nav class = "navbar navbar-expand-lg navbar-light bg-light">
-        <a class = "navbar-brand" href = "/">HGW Banners</a>
-        <div class = "collapse navbar-collapse" id = "navbarNav">
-            <ul class = "navbar-nav ml-auto">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">HGW Banners</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
-                    <li class = "nav-item">
-                        <a class = "nav-link" href = "{{ url_for('add_banner') }}">Add Banner</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('add_banner') }}">Add Banner</a>
                     </li>
-                    <li class = "nav-item">
-                        <a class = "nav-link" href = "{{ url_for('logout') }}">Logout</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                     </li>
                 {% else %}
-                    <li class = "nav-item">
-                        <a class = "nav-link" href = "{{ url_for('login') }}">Login</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
     </nav>
-    <div class = "container">
-        <h1 class = "mt-5">Current Banners</h1>
-        <ul class = "list-group mt-3">
-            {% for banner in banners %}
-                <li class = "list-group-item">
-                    <h2>{{ banner.name }} ({{ banner.game_title }})</h2>
-                    <p>Type:  {{ banner.type }}</p>
-                    <p>Start Date: {{ banner.start_date }}</p>
-                    <p>End Date: {{ banner.end_date }}</p>
-                    <p>Remaining Time: {{ banner.remaining_time }} days</p>
-                </li>
-            {% endfor %}
+    <div class="container">
+        <h1 class="mt-5">Current Banners</h1>
+        <!-- Added navigation tabs -->
+        <ul class="nav nav-tabs" id="bannerTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="genshin-tab" data-toggle="tab" href="#genshin" role="tab" aria-controls="genshin" aria-selected="true">Genshin Impact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="wuthering-tab" data-toggle="tab" href="#wuthering" role="tab" aria-controls="wuthering" aria-selected="false">Wuthering Waves</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="hsr-tab" data-toggle="tab" href="#hsr" role="tab" aria-controls="hsr" aria-selected="false">Honkai Star Rail</a>
+            </li>
         </ul>
+        <div class="tab-content" id="bannerTabsContent">
+            <!-- Tab content for Genshin Impact -->
+            <div class="tab-pane fade show active" id="genshin" role="tabpanel" aria-labelledby="genshin-tab">
+                <ul class="list-group mt-3">
+                    {% for banner in banners %}
+                        {% if banner['Game_title'] == 'Genshin Impact' %}
+                            <li class="list-group-item">
+                                <h2>{{ banner['Name'] }} ({{ banner['Game_title'] }})</h2>
+                                <p>Type: {{ banner['Banner_type'] }}</p>
+                                <p>Start Date: {{ banner['start_date'] }}</p>
+                                <p>End Date: {{ banner['end_date'] }}</p>
+                                <p>Remaining Time: {{ banner['remaining_time'] }} days</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Tab content for Wuthering Waves -->
+            <div class="tab-pane fade" id="wuthering" role="tabpanel" aria-labelledby="wuthering-tab">
+                <ul class="list-group mt-3">
+                    {% for banner in banners %}
+                        {% if banner['Game_title'] == 'Wuthering Waves' %}
+                            <li class="list-group-item">
+                                <h2>{{ banner['Name'] }} ({{ banner['Game_title'] }})</h2>
+                                <p>Type: {{ banner['Banner_type'] }}</p>
+                                <p>Start Date: {{ banner['start_date'] }}</p>
+                                <p>End Date: {{ banner['end_date'] }}</p>
+                                <p>Remaining Time: {{ banner['remaining_time'] }} days</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Tab content for Honkai Star Rail -->
+            <div class="tab-pane fade" id="hsr" role="tabpanel" aria-labelledby="hsr-tab">
+                <ul class="list-group mt-3">
+                    {% for banner in banners %}
+                        {% if banner['Game_title'] == 'Honkai Star Rail' %}
+                            <li class="list-group-item">
+                                <h2>{{ banner['Name'] }} ({{ banner['Game_title'] }})</h2>
+                                <p>Type: {{ banner['Banner_type'] }}</p>
+                                <p>Start Date: {{ banner['start_date'] }}</p>
+                                <p>End Date: {{ banner['end_date'] }}</p>
+                                <p>Remaining Time: {{ banner['remaining_time'] }} days</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, DateField
 from wtforms.validators import DataRequired, Length
 import sqlite3
 from datetime import datetime
@@ -36,14 +36,10 @@ def get_db_connection():
     return conn
 
 def calculate_remaining_time(end_date):
-    try:
-        end_date_dt = datetime.strptime(end_date, '%Y-%m-%d')
-        now = datetime.now()
-        remaining_time = end_date_dt - now
-        return remaining_time.days
-    except ValueError as e:
-        print(f"Error parsing date: {e}")
-        return -1
+    end_date_dt = datetime.strptime(end_date, '%Y-%m-%d')
+    now = datetime.now()
+    remaining_time = end_date_dt - now
+    return remaining_time.days
 
 @app.route('/')
 def index():
@@ -56,9 +52,7 @@ def index():
         remaining_time = calculate_remaining_time(banner['end_date'])
         if remaining_time > 0:
             banner_dict['remaining_time'] = remaining_time
-            banner_dict['Type'] = banner_dict.pop('Banner_type')
             banners_with_remaining_time.append(banner_dict)
-    print("Processed banners with remaining time:", banners_with_remaining_time)
     return render_template('index.html', banners=banners_with_remaining_time)
 
 @app.route('/api/banners', methods=['GET'])
@@ -72,11 +66,9 @@ def get_banners():
         remaining_time = calculate_remaining_time(banner['end_date'])
         if remaining_time > 0:
             banner_dict['remaining_time'] = remaining_time
-            banner_dict['Type'] = banner_dict.pop('Banner_type')
             banners_with_remaining_time.append(banner_dict)
     return jsonify(banners_with_remaining_time)
 
-# User login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -92,7 +84,6 @@ def login():
         flash('Invalid username or password')
     return render_template('login.html')
 
-# User logout route
 @app.route('/logout')
 @login_required
 def logout():
