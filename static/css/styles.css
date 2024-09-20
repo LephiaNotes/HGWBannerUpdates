@@ -1,0 +1,43 @@
+/* Make the body take up the full height of the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a default background size and properties */
+#body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+}
+
+/* Ensure container background is slightly transparent for readability */
+.container {
+    background: rgba(255, 255, 255, 0.8); /* White with 80% opacity */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Add padding and styling to the list items */
+.list-group-item {
+    background: rgba(255, 255, 255, 0.9); /* White with 90% opacity */
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Navbar styling to ensure readability over background images */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Tab styling */
+.nav-tabs .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
